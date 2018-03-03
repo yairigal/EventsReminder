@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "414680960368",
+    "firebase_url": "https://eventsreminder-846e6.firebaseio.com",
+    "project_id": "eventsreminder-846e6",
+    "storage_bucket": "eventsreminder-846e6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:414680960368:android:5b1b7b8872a1d6b5",
+        "android_client_info": {
+          "package_name": "yairigal.com.eventsreminder"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "414680960368-hh20ekujc7s4lb7a759hs7rncskr9908.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "yairigal.com.eventsreminder",
+            "certificate_hash": "264cea73192fce0971df475d308287cd9b29d17b"
+          }
+        },
+        {
+          "client_id": "414680960368-19ksgav5khkcnmv371jlo82rdjghopvv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCNxdhmRIBf0FxXi-ydUfy3nOhFDJxnoHc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "414680960368-19ksgav5khkcnmv371jlo82rdjghopvv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
