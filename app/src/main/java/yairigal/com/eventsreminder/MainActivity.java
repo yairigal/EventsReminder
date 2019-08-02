@@ -1,5 +1,6 @@
 package yairigal.com.eventsreminder;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -21,6 +22,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.rey.material.app.Dialog;
 import com.tsongkha.spinnerdatepicker.DatePickerDialog;
 import com.tsongkha.spinnerdatepicker.SpinnerDatePickerDialogBuilder;
+
+import org.joda.time.DateTime;
 
 public class MainActivity extends AppCompatActivity {
     ListView listView;
@@ -85,9 +88,10 @@ public class MainActivity extends AppCompatActivity {
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                final DateTime now = DateTime.now();
                 new SpinnerDatePickerDialogBuilder()
                         .context(MainActivity.this)
-                        .defaultDate(2017, 0, 1)
+                        .defaultDate(now.getYear(), now.getMonthOfYear()-1, now.getDayOfMonth())
                         .callback(new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(com.tsongkha.spinnerdatepicker.DatePicker view, final int year, final int monthOfYear, final int dayOfMonth) {
@@ -131,6 +135,25 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+
+
+    private void openStopTimePicker(final DataObject item, final Dialog mDialog){
+        final DateTime now = DateTime.now();
+        new SpinnerDatePickerDialogBuilder()
+                .context(MainActivity.this)
+                .defaultDate(now.getYear(), now.getMonthOfYear()-1, now.getDayOfMonth())
+                .callback(new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(com.tsongkha.spinnerdatepicker.DatePicker view, final int year, final int monthOfYear, final int dayOfMonth) {
+                        item.endDate = new Date(year, monthOfYear + 1, dayOfMonth);
+                        int index = items.indexOf(item);
+                        items.remove(index);
+                        items.add(index,item);
+                        adp.notifyDataSetChanged();
+                        mDialog.dismiss();
+                    }
+                }).build().show();
+    }
     private void setupListView() {
         items = new DataObjects(new DataObjects.myCallback() {
             @Override
@@ -147,9 +170,16 @@ public class MainActivity extends AppCompatActivity {
                     convertView = LayoutInflater.from(getContext()).inflate(R.layout.child_item, parent, false);
 
                 DataObject currentItem = getItem(position);
+                String mid_word = "Since";
+                if (currentItem.isDone()){
+                    mid_word = "Done ( "+currentItem.time.toString()+" )";
+                    convertView.setBackgroundColor(Color.parseColor("#FF5252"));
+                }
+                ((TextView) convertView.findViewById(R.id.stop_word)).setText(mid_word);
                 ((TextView) convertView.findViewById(R.id.item_name)).setText(currentItem.title);
                 String time = currentItem.getDisplayString();
                 ((TextView) convertView.findViewById(R.id.item_time)).setText(time);
+
                 //Here we can do changes to the convertView, such as set a text on a TextView
                 //or an image on an ImageView.
                 return convertView;
@@ -168,6 +198,7 @@ public class MainActivity extends AppCompatActivity {
                 final Dialog mDialog = new Dialog(MainActivity.this);
                 mDialog.applyStyle(0)
                         .positiveAction("EDIT")
+                        .neutralAction("STOP COUNT")
                         .negativeAction("REMOVE")
                         .title("Choose Action")
                         .positiveActionClickListener(new View.OnClickListener() {
@@ -180,6 +211,14 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onClick(View view) {
                                 removeItem(i, mDialog, viewFather);
+                            }
+                        })
+                        // STOP COUNT
+                        .neutralActionClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                DataObject item = items.get(i);
+                                openStopTimePicker(item,mDialog);
                             }
                         })
                         .cancelable(true)

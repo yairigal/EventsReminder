@@ -14,56 +14,68 @@ import java.io.Serializable;
 
 class DataObject implements Serializable {
 
+    public Date time;
+    public String title;
+    public Date endDate;
+
     //time format -> year@@month@@day
     public DataObject(Date time, String title) {
         this.time = time;
         this.title = title;
+        this.endDate = null;
     }
 
-    public DataObject() {}
+    public DataObject() {
+    }
 
-    public String getDisplayString(){
-        DateTime now = DateTime.now();
-        Date d = getElapsedTime(now,this.time);
+    public String getDisplayString() {
+        DateTime stopTime = DateTime.now();
+        if (this.isDone())
+            stopTime = new DateTime(this.endDate.year, this.endDate.month, this.endDate.day, 0, 0);
+        Date d = getElapsedTime(stopTime, this.time);
         String text = "";
-        if(d.year != 0){
+        if (d.year != 0) {
             text += d.year + " Year";
-            if(d.year > 1)
+            if (d.year > 1)
                 text += "s";
             text += " ";
         }
-        if(d.month != 0){
+        if (d.month != 0) {
             text += d.month + " Month";
-            if(d.month > 1)
+            if (d.month > 1)
                 text += "s";
             text += " ";
         }
-        if(d.day != 0){
+        if (d.day != 0) {
             text += d.day + " Day";
-            if(d.day > 1)
+            if (d.day > 1)
                 text += "s";
             text += " ";
         }
         return text;
     }
 
-    private static Date getElapsedTime(Date a, Date b){
-        DateTime dta = new DateTime(a.year,a.month,a.day,0,0);
-        DateTime dtb = new DateTime(b.year,b.month,b.day,0,0);
-        Period p = new Period(dtb, dta);
-        return new Date(p.getYears(),p.getMonths(),p.getDays());
+    public boolean isDone() {
+        return this.endDate != null;
     }
 
-    private static Date getElapsedTime(DateTime a, Date b){
-        DateTime dtb = new DateTime(b.year,b.month,b.day,0,0);
+
+    private static Date getElapsedTime(Date a, Date b) {
+
+        DateTime dta = new DateTime(a.year, a.month, a.day, 0, 0);
+        DateTime dtb = new DateTime(b.year, b.month, b.day, 0, 0);
+        Period p = new Period(dtb, dta);
+        return new Date(p.getYears(), p.getMonths(), p.getDays());
+    }
+
+    private static Date getElapsedTime(DateTime a, Date b) {
+        DateTime dtb = new DateTime(b.year, b.month, b.day, 0, 0);
         int years = Years.yearsBetween(dtb, a).getYears();
         int months = Months.monthsBetween(dtb, a).getMonths();
         int days = Days.daysBetween(dtb, a).getDays();
-        return new Date(years,months % 12,(days - years*365)%30);
+        return new Date(years, months % 12, (days - years * 365) % 30);
     }
 
-    public Date time;
-    public String title;
 
 }
 
